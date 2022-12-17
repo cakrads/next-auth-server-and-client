@@ -1,4 +1,4 @@
-import * as db from "@server/db";
+import { db } from "@server/db";
 import { TAuth, TAuthToken } from "types";
 
 const list = async (): Promise<any> => {
