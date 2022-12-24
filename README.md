@@ -1,34 +1,76 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This sample repo is next.js authentication in server (api-server) and client (ssr and client).
+
+## Note
+Current code, I didn't create the frontend part.
 
 ## Getting Started
 
-First, run the development server:
+Run the development server:
 
 ```bash
+pnpm run dev
+# or
 npm run dev
 # or
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Check The Frontend
+Open [http://localhost:3000](http://localhost:3000) with your browser to check it's run well or not in your device (:
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### Check The API Server
+Do http post to create new user in this endpoint: `http://localhost:3000/api/auth/v1/register` with this payload:
+```
+// Body Json Content
+{
+  "email": "admin@gmail.com",
+  "password": "test"
+}
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## Folder Structure
+Here folder structure to this project:
+```
+├ public/                       
+├ server/                       # all code to handle API will be here
+| | db/                         # responsible for communicate to db, ex: connect()
+| |   db.ts                     # example use local variable
+| ├ config/                     # initial all api config, get from env
+| ├ helpers/                    # middleware and another which will help globally
+| └ module/                      
+|   ├ auth/
+|   | └ v1/                     # versioning early will help us letter
+|   |   | api-handler.ts        # handle HTTP Method and call services
+|   |   | model.ts              # db query will be here
+|   |   ├ dto/                  # code for validate payload
+|   |   ├ services/              
+|   |   |   auth.ts             # register, login, refreshToken, logout 
+|   |   |   token.ts            # verify Access Token and match with current DB
+|   |   └ utils/                # ex: generateJWT, verifyJWT, verifyHashPassword, etc
+|   └ user/
+|     └ v1/
+|       | api-handler.ts        # handle HTTP Method and call services
+|       | model.ts              # db query will be here
+|       └ services/
+|           user.ts             # listUser, and me. will need JWT Token to access 
+├ src/                          # all code to handle client/show UI will in src
+| | config/                     # initial all frontend config, get from env 
+| ├ pages/                       
+| | └ api/                      # API route still use basic nextjs routes
+| |   ├ auth/                   
+| |   | └ v1/                   # will call module.auth.v1.apiHandler
+| |   |     login.ts            
+| |   |     logout.ts
+| |   |     refresh-token.ts
+| |   |     register.ts
+| |   └ user/            
+| |      └ v1/                  # will call module.user.v1.apiHandler
+| |          list.ts
+| |          me.ts
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+- `server/` : this folder responsible for the backend code or handle API, so all code which responsible to handle REST API will be here. But, the routes are still in `pages/api/*` folder. 
+Because all the backend code is in `server/`  folder, it will be easier in the future if we want to move the code to a separate server.
 
-## Learn More
+- `src/` : this folder acts as the frontend code, but the api routes still in `pages/api/*`.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
