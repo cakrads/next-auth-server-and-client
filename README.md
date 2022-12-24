@@ -1,7 +1,6 @@
 This sample repo is next.js authentication in server (api-server) and client (ssr and client).
 
-## Note
-Current code, I didn't create the frontend part.
+## Note: Frontend Code still in Development
 
 ## Getting Started
 
