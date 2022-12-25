@@ -1,6 +1,6 @@
 import { serialize, parse } from "cookie";
 
-import { AUTH_CONFIG } from "@server/config";
+import { AUTH_CONFIG } from "@server/configs";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 

@@ -1,7 +1,7 @@
 import JWT from "jsonwebtoken";
 import createHttpError from "http-errors";
 
-import { AUTH_CONFIG } from "@server/config";
+import { AUTH_CONFIG } from "@server/configs";
 
 import { TUser } from "types";
 
