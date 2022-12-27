@@ -30,7 +30,10 @@ export const signRefreshToken = async (user: TUser) => {
 };
 
 export const getJWTPayload = async (refreshToken: string) => {
-  const payload: any = await JWT.verify(refreshToken, AUTH_CONFIG.JWT_PRIVATE_KEY);
+  const payload: any = await JWT.verify(
+    refreshToken,
+    AUTH_CONFIG.JWT_PRIVATE_KEY
+  );
   if (!payload) {
     throw new createHttpError.Unauthorized();
   }

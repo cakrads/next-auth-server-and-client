@@ -4,11 +4,15 @@ import { CookieValueTypes, getCookie } from "cookies-next"; // https://github.co
 import { HttpResponse } from "./HttpResponse";
 import { AUTH_CONFIG } from "@src/configs";
 
-import { IAuthClient, IAuthClientOptions, IBearerAuth } from "./types/AuthClient";
+import {
+  IAuthClient,
+  IAuthClientOptions,
+  IBearerAuth,
+} from "./types/AuthClient";
 import { TAuthToken } from "types/*";
 
 /**
- * instead of having to send the url token requres 
+ * instead of having to send the url token requres
  * every time when declare Authclient, it's better put here
  * otherwise it's available in options.tokenRequestUri
  */
@@ -58,7 +62,7 @@ export class AuthClient implements IAuthClient {
 
       const token = this.authToken;
       if (token.accessToken) {
-        return { "Authorization": "Bearer " + token.accessToken };
+        return { Authorization: "Bearer " + token.accessToken };
       } else {
         // no token available
         console.warn("No bearer token available.");
@@ -72,9 +76,9 @@ export class AuthClient implements IAuthClient {
   }
 
   /**
-  * Get the available token from Cookies
-  * @returns {void}
-  */
+   * Get the available token from Cookies
+   * @returns {void}
+   */
   getTokenFromCookies(): void {
     const { req, res } = this.options;
     let accessToken: CookieValueTypes;
@@ -82,8 +86,14 @@ export class AuthClient implements IAuthClient {
 
     // SSR
     if (!req && !res) {
-      accessToken = getCookie(AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME, { req, res });
-      refreshToken = getCookie(AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME, { req, res });
+      accessToken = getCookie(AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME, {
+        req,
+        res,
+      });
+      refreshToken = getCookie(AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME, {
+        req,
+        res,
+      });
     }
 
     // browser
@@ -114,7 +124,7 @@ export class AuthClient implements IAuthClient {
 
       throw new Error(
         "Token fetch error - no 'accessToken' found in resolved JSON: " +
-        JSON.stringify(json)
+          JSON.stringify(json)
       );
     } else {
       throw new Error("Token fetch error: " + result.getErrorMessage());

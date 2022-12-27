@@ -13,7 +13,6 @@ const MAX_ATTEMPTS = 10000;
 const TIMEOUT = 3;
 const RETRY_DELAY = 1000;
 
-
 /**
  *  Example usage:
  *  const authClient = new AuthClient({req, res});
@@ -23,12 +22,12 @@ const RETRY_DELAY = 1000;
 /**
  * use customeType to use spesific type in result.
  * example:
- *   const result: HttpResult<User> = await httpClient.get("user/123", User); 
+ *   const result: HttpResult<User> = await httpClient.get("user/123", User);
  *   const user: User = result.value;
  * so we can access user.fullName
  */
 export declare type CustomType<T> = {
-  new(...args: any[]): T;
+  new (...args: any[]): T;
 };
 
 /**
@@ -85,7 +84,11 @@ export class HttpClient {
     return this._execute("GET", uri, null, headers);
   }
 
-  async get<T>(uri: string, customType?: CustomType<T>, headers?: any): Promise<HttpResult<T>> {
+  async get<T>(
+    uri: string,
+    customType?: CustomType<T>,
+    headers?: any
+  ): Promise<HttpResult<T>> {
     const response = await this.executeGet(uri, headers);
     return this._parseResult<T>(response, customType);
   }
@@ -94,7 +97,12 @@ export class HttpClient {
     return this._execute("POST", uri, data, headers);
   }
 
-  async post<T>(uri: string, data?: any, customType?: CustomType<T>, headers?: any): Promise<HttpResult<T>> {
+  async post<T>(
+    uri: string,
+    data?: any,
+    customType?: CustomType<T>,
+    headers?: any
+  ): Promise<HttpResult<T>> {
     const response = await this.executePost(uri, data, headers);
     return this._parseResult<T>(response, customType);
   }
@@ -103,7 +111,12 @@ export class HttpClient {
     return this._execute("PUT", uri, data, headers);
   }
 
-  async put<T>(uri: string, data?: any, customType?: CustomType<T>, headers?: any): Promise<HttpResult<T>> {
+  async put<T>(
+    uri: string,
+    data?: any,
+    customType?: CustomType<T>,
+    headers?: any
+  ): Promise<HttpResult<T>> {
     const response = await this.executePut(uri, data, headers);
     return this._parseResult<T>(response, customType);
   }
@@ -112,7 +125,12 @@ export class HttpClient {
     return this._execute("DELETE", uri, data, headers);
   }
 
-  async delete<T>(uri: string, data?: any, customType?: CustomType<T>, headers?: any): Promise<HttpResult<T>> {
+  async delete<T>(
+    uri: string,
+    data?: any,
+    customType?: CustomType<T>,
+    headers?: any
+  ): Promise<HttpResult<T>> {
     const response = await this.executeDelete(uri, data, headers);
     return this._parseResult<T>(response, customType);
   }
@@ -212,8 +230,15 @@ export class HttpClient {
     }
   }
 
-  private async _parseResult<T>(response: HttpResponse, customType?: CustomType<T>): Promise<HttpResult<T>> {
-    return HttpClient._parseResult<T>(response, this.inboundProcessors, customType);
+  private async _parseResult<T>(
+    response: HttpResponse,
+    customType?: CustomType<T>
+  ): Promise<HttpResult<T>> {
+    return HttpClient._parseResult<T>(
+      response,
+      this.inboundProcessors,
+      customType
+    );
   }
 
   static async _parseResult<T>(
@@ -264,4 +289,4 @@ export class HttpClient {
       );
     }
   }
-};
+}

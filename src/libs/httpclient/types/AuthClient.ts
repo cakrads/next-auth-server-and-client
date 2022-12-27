@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-
 /**
  * Performs token-based authentication with a 3rd party provider.
  */
@@ -42,7 +41,7 @@ export interface IAuthClientOptions {
 export type TAuthToken = {
   access_token: string;
   refresh_token: string;
-}
+};
 
 export interface IBearerAuth {
   Authorization: string;

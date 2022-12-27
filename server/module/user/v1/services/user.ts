@@ -6,8 +6,7 @@ import UserModel from "../model";
 import { TAuth, TUserList } from "types";
 
 const me = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { email }: TAuth =
-    await TokenService.verifyAccessToken(req);
+  const { email }: TAuth = await TokenService.verifyAccessToken(req);
 
   const user: TAuth = await UserModel.find(email);
 
