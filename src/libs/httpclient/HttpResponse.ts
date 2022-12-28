@@ -23,8 +23,8 @@ export class HttpResponse {
    */
   get success(): boolean {
     // check for 2xx response plus no errors (could happen during JSON access/parsing or transformation/validation)
-    const s = this.status;
-    return s > 199 && s < 300 && this.error === undefined;
+    const status = this.status;
+    return status > 199 && status < 300 && this.error === undefined;
   }
 
   /**
@@ -77,7 +77,7 @@ export class HttpResponse {
       console.error(e);
     }
 
-    return `${statusText} (${this.status})${data}`;
+    return `Error: ${statusText} (${this.status})${data}`;
   }
 
   /**

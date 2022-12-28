@@ -80,7 +80,7 @@ export class HttpClient {
     this._setInstance();
   }
 
-  executeGet(uri: string, headers?: any): Promise<HttpResponse> {
+  private executeGet(uri: string, headers?: any): Promise<HttpResponse> {
     return this._execute("GET", uri, null, headers);
   }
 
@@ -90,10 +90,14 @@ export class HttpClient {
     headers?: any
   ): Promise<HttpResult<T>> {
     const response = await this.executeGet(uri, headers);
-    return this._parseResult<T>(response, customType);
+    return this._parseResultInternal<T>(response, customType);
   }
 
-  executePost(uri: string, data?: any, headers?: any): Promise<HttpResponse> {
+  private executePost(
+    uri: string,
+    data?: any,
+    headers?: any
+  ): Promise<HttpResponse> {
     return this._execute("POST", uri, data, headers);
   }
 
@@ -104,10 +108,14 @@ export class HttpClient {
     headers?: any
   ): Promise<HttpResult<T>> {
     const response = await this.executePost(uri, data, headers);
-    return this._parseResult<T>(response, customType);
+    return this._parseResultInternal<T>(response, customType);
   }
 
-  executePut(uri: string, data?: any, headers?: any): Promise<HttpResponse> {
+  private executePut(
+    uri: string,
+    data?: any,
+    headers?: any
+  ): Promise<HttpResponse> {
     return this._execute("PUT", uri, data, headers);
   }
 
@@ -118,10 +126,14 @@ export class HttpClient {
     headers?: any
   ): Promise<HttpResult<T>> {
     const response = await this.executePut(uri, data, headers);
-    return this._parseResult<T>(response, customType);
+    return this._parseResultInternal<T>(response, customType);
   }
 
-  executeDelete(uri: string, data?: any, headers?: any): Promise<HttpResponse> {
+  private executeDelete(
+    uri: string,
+    data?: any,
+    headers?: any
+  ): Promise<HttpResponse> {
     return this._execute("DELETE", uri, data, headers);
   }
 
@@ -132,10 +144,16 @@ export class HttpClient {
     headers?: any
   ): Promise<HttpResult<T>> {
     const response = await this.executeDelete(uri, data, headers);
-    return this._parseResult<T>(response, customType);
+    return this._parseResultInternal<T>(response, customType);
   }
 
-  _execute(
+  cancel() {
+    const CancelToken = axios.CancelToken;
+    const source = CancelToken.source();
+    source.cancel();
+  }
+
+  private _execute(
     method: any,
     uri: string,
     data: any,
@@ -144,7 +162,7 @@ export class HttpClient {
     return this._executeWithRetries(method, uri, data, headers, 1);
   }
 
-  async _executeWithRetries(
+  private async _executeWithRetries(
     method: any,
     uri: string,
     data: any,
@@ -230,7 +248,7 @@ export class HttpClient {
     }
   }
 
-  private async _parseResult<T>(
+  private async _parseResultInternal<T>(
     response: HttpResponse,
     customType?: CustomType<T>
   ): Promise<HttpResult<T>> {
@@ -277,7 +295,7 @@ export class HttpClient {
       return new HttpResult<T>(
         data as T,
         response.response,
-        "",
+        undefined,
         response.attempts
       );
     } catch (e) {

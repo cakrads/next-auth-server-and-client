@@ -124,7 +124,7 @@ export class AuthClient implements IAuthClient {
 
       throw new Error(
         "Token fetch error - no 'accessToken' found in resolved JSON: " +
-          JSON.stringify(json)
+        JSON.stringify(json)
       );
     } else {
       throw new Error("Token fetch error: " + result.getErrorMessage());
