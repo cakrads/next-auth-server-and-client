@@ -1,8 +1,7 @@
 /* inspired from: https://github.com/hardcodet/httpclient-js */
-import axios, { AxiosInstance, AxiosResponse } from "axios";
+import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig } from "axios";
 import { plainToClass } from "class-transformer";
 import { validateOrReject } from "class-validator";
-
 import { HttpResponse } from "./HttpResponse";
 import { HttpResult } from "./HttpResult";
 import { IHttpClientOptions } from "./types/HttpClientOptions";
@@ -38,6 +37,7 @@ export class HttpClient {
   private customHeaders: any;
   private client!: AxiosInstance;
   private options: IHttpClientOptions;
+  private abortController: any;
 
   public inboundProcessors: IJsonProcessor[] = [];
   public outboundProcessors: IJsonProcessor[] = [];
@@ -57,15 +57,19 @@ export class HttpClient {
 
     this.baseUri = baseUri;
     this.customHeaders = this.options.customHeaders;
+
     this._setInstance();
   }
 
   private _setInstance() {
     const headers = this.customHeaders;
 
-    const config = {
+    this.abortController = new AbortController();
+
+    const config: AxiosRequestConfig = {
       baseURL: this.baseUri,
       timeout: this.options.timeout,
+      signal: this.abortController.signal,
       headers,
       validateStatus: (status: any) => {
         return status >= 200; // accept all responses
@@ -148,9 +152,7 @@ export class HttpClient {
   }
 
   cancel() {
-    const CancelToken = axios.CancelToken;
-    const source = CancelToken.source();
-    source.cancel();
+    this.abortController.abort();
   }
 
   private _execute(
