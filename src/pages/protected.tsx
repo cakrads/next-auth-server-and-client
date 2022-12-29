@@ -7,7 +7,7 @@ type TProtedPage = {
 } & TAuthGuardProps;
 
 function ProtectedPage(props: TProtedPage) {
-  return <>Hi {props.data?.profile.name || "-"}</>;
+  return <>Hi, your email is {props.data?.profile.email || "-"}</>;
 }
 
 export default PrivateRoute(ProtectedPage);

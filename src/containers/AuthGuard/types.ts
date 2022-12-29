@@ -1,16 +1,9 @@
+import { TAuthData } from "types/*";
+
 export type TAuthGuard = {
   data: TAuthData | null;
   isLoading?: Boolean;
   error: TAuthGuardError;
-};
-
-export type TAuthData = {
-  profile: TProfile;
-};
-
-export type TProfile = {
-  email: string;
-  name: string;
 };
 
 export type TAuthGuardError = {

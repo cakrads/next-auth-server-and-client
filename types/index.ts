@@ -3,6 +3,13 @@ export type TUser = {
   password?: string;
 };
 
+/**
+ * Need for AuthGuard Props
+ */
+export type TAuthData = {
+  profile: TUser;
+};
+
 export type TAuthPassword = {
   hash: string;
   salt: string;
