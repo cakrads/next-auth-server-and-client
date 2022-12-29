@@ -14,7 +14,7 @@ const RETRY_DELAY = 1000;
 
 /**
  *  Example usage:
- *  const authClient = new AuthClient({req, res});
+ *  const authClient = new AuthClient({ nextContext: context });
  *  this.httpClient = new HttpClient("https://api.foo.com", { authClient });
  */
 

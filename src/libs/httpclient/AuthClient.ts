@@ -16,7 +16,7 @@ import { TAuthToken } from "types/*";
  * every time when declare Authclient, it's better put here
  * otherwise it's available in options.tokenRequestUri
  */
-const TOKEN_REQUEST_URL = "";
+const URL_TOKEN_REQUEST = AUTH_CONFIG.URL_API_TOKEN_REQUEST;
 
 /**
  * Provides Client and SSR Bearer token authentication.
@@ -29,9 +29,9 @@ export class AuthClient implements IAuthClient {
     const headers = {
       "Content-type": "application/json",
     };
-
+    console.log({ URL_TOKEN_REQUEST });
     const config = {
-      baseURL: this.options?.tokenRequestUri || TOKEN_REQUEST_URL,
+      baseURL: this.options?.tokenRequestUri || URL_TOKEN_REQUEST,
       timeout: 5000,
       headers,
       validateStatus: (status: any) => {
@@ -80,11 +80,13 @@ export class AuthClient implements IAuthClient {
    * @returns {void}
    */
   getTokenFromCookies(): void {
-    const { req, res } = this.options;
+    const { nextContext } = this.options;
     let accessToken: CookieValueTypes;
     let refreshToken: CookieValueTypes;
 
     // SSR
+    const req = nextContext.req;
+    const res = nextContext.res;
     if (!req && !res) {
       accessToken = getCookie(AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME, {
         req,
@@ -144,7 +146,7 @@ export class AuthClient implements IAuthClient {
     };
 
     const request = {
-      method: "POST" as any,
+      method: "POST",
       headers,
       data: payload,
     };

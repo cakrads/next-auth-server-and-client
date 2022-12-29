@@ -1,4 +1,4 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import type { NextPageContext } from "next";
 
 /**
  * Performs token-based authentication with a 3rd party provider.
@@ -25,12 +25,7 @@ export interface IAuthClientOptions {
   /**
    * res from next.js to get Auth in cookies
    */
-  req: NextApiRequest;
-
-  /**
-   * res from next.js to get Auth in cookies
-   */
-  res: NextApiResponse;
+  nextContext: NextPageContext;
 
   /**
    * Request URI to be used. For Auth0, this follows the scheme 'https://baseUri/oauth/token'.

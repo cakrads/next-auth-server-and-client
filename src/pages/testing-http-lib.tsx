@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { HttpClient, HttpResult } from "@src/libs/httpclient";
+import { URL_API } from "@src/configs";
 
 export type TTest = {
   data: TData;
@@ -29,11 +30,11 @@ export type TError = {
 };
 
 const useRepository = () => {
-  const httpClient = new HttpClient("http://localhost:3000");
+  const httpClient = new HttpClient(URL_API);
 
   const getData = async () => {
     const result: HttpResult<TDataResult> = await httpClient.get<TDataResult>(
-      "api/testing-http-lib"
+      "/testing-http-lib"
     );
     console.log("Method", result.getValueOrThrow().method);
     console.log("result.response", result.response);
