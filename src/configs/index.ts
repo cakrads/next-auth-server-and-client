@@ -1,3 +1,5 @@
+import { END_POINT } from "./end-point";
+
 export const URL_API =
   process.env.NODE_ENV === "development"
     ? <string>process.env.NEXT_PUBLIC_URL_API_DEV
@@ -14,3 +16,5 @@ export const AUTH_CONFIG = {
     `${URL_API}${process.env.NEXT_PUBLIC_URL_PATH_TOKEN_REQUEST}`
   ),
 };
+
+export { END_POINT };
