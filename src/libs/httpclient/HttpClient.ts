@@ -4,6 +4,7 @@ import { plainToClass } from "class-transformer";
 import { validateOrReject } from "class-validator";
 import { HttpResponse } from "./HttpResponse";
 import { HttpResult } from "./HttpResult";
+
 import { IHttpClientOptions } from "./types/HttpClientOptions";
 import { IJsonProcessor } from "./types/JsonProcessing";
 import { IRetryStrategy } from "./types/RetryStrategy";
@@ -26,18 +27,19 @@ const RETRY_DELAY = 1000;
  * so we can access user.fullName
  */
 export declare type CustomType<T> = {
-  new (...args: any[]): T;
+  new(...args: any[]): T;
 };
 
 /**
  * HTTP / API client.
  */
 export class HttpClient {
+  private static instance: HttpClient;
+
   private baseUri: string;
-  private customHeaders: any;
   private client!: AxiosInstance;
+  private customHeaders: any;
   private options: IHttpClientOptions;
-  private abortController: any;
 
   public inboundProcessors: IJsonProcessor[] = [];
   public outboundProcessors: IJsonProcessor[] = [];
@@ -49,6 +51,7 @@ export class HttpClient {
       retryDelay: RETRY_DELAY,
       retryStrategy: IRetryStrategy.Exponential,
       authClient: undefined,
+      signal: undefined,
       customHeaders: undefined,
     };
 
@@ -58,30 +61,38 @@ export class HttpClient {
     this.baseUri = baseUri;
     this.customHeaders = this.options.customHeaders;
 
-    this._setInstance();
+    this._setInstanceHeader();
+
+    // singleton instance
+    HttpClient.instance = this;
   }
 
-  private _setInstance() {
+  // singleton static method
+  public static getInstance(
+    baseUri: string = "", options?: IHttpClientOptions
+  ): HttpClient {
+    if (!HttpClient.instance)
+      HttpClient.instance = new HttpClient(baseUri, options);
+    return HttpClient.instance;
+  }
+
+  setCustomHeaders(headers: any) {
+    this.customHeaders = headers;
+    this._setInstanceHeader();
+  }
+
+  _setInstanceHeader() {
     const headers = this.customHeaders;
-
-    this.abortController = new AbortController();
-
     const config: AxiosRequestConfig = {
       baseURL: this.baseUri,
       timeout: this.options.timeout,
-      signal: this.abortController.signal,
+      signal: this.options?.signal,
       headers,
       validateStatus: (status: any) => {
         return status >= 200; // accept all responses
       },
     };
-
     this.client = axios.create(config);
-  }
-
-  setCustomHeaders(headers: any) {
-    this.customHeaders = headers;
-    this._setInstance();
   }
 
   private executeGet(uri: string, headers?: any): Promise<HttpResponse> {
@@ -149,10 +160,6 @@ export class HttpClient {
   ): Promise<HttpResult<T>> {
     const response = await this.executeDelete(uri, data, headers);
     return this._parseResultInternal<T>(response, customType);
-  }
-
-  cancel() {
-    this.abortController.abort();
   }
 
   private _execute(

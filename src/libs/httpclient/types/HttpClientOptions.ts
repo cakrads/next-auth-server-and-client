@@ -1,6 +1,9 @@
 import { IRetryStrategy } from "./RetryStrategy";
 import { IAuthClient } from "./AuthClient";
 
+import { GenericAbortSignal } from "axios";
+
+
 /**
  * Options for the HTTP client.
  */
@@ -32,4 +35,9 @@ export interface IHttpClientOptions {
    * Optional custom headers to be included in every call.
    */
   customHeaders?: any;
+
+  /**
+   * To handle cancel request from AbortController
+   */
+  signal?: GenericAbortSignal;
 }
