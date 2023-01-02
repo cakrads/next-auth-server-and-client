@@ -2,7 +2,7 @@ import { NextPageContext } from "next";
 
 import AuthRepository from "./repository";
 
-import { TAuthGuard, TAuthGuardError } from "@src/containers/AuthGuard";
+import { TAuthGuard } from "@src/containers/AuthGuard";
 import * as DTO from "./types";
 import { AuthClient, IHttpClientOptions } from "@src/libs/httpclient";
 
@@ -17,7 +17,7 @@ const checkUserAuthentication = async (
     const response = await AuthRepository.getCurrentUser(ctx);
     return {
       data: response.data,
-      error: {} as TAuthGuardError,
+      error: null,
     };
   } catch (error: any) {
     return {

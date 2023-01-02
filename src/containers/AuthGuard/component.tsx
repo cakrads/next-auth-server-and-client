@@ -15,10 +15,10 @@ const AuthGuardContainer = (WrappedComponent: any) => {
   component.getInitialProps = async (ctx): Promise<TAuthGuardProps> => {
     const result: TAuthGuard =
       await AuthModule.AuthService.checkUserAuthentication(ctx);
-    console.log({ result });
+
     // Are you an authorized user or not?
     if (!result.data || result.error) {
-      const errorMessage = result.error.status
+      const errorMessage = result.error?.status
         ? `&error-message=${result.error.message}`
         : "";
       const redirectPage = `${REDIRECT_PAGE}${errorMessage}`;

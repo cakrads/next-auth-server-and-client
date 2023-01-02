@@ -3,7 +3,7 @@ import { TAuthData } from "types/*";
 export type TAuthGuard = {
   data: TAuthData | null;
   isLoading?: Boolean;
-  error: TAuthGuardError;
+  error: TAuthGuardError | null;
 };
 
 export type TAuthGuardError = {
