@@ -19,10 +19,21 @@ export class HttpResult<T = any> extends HttpResponse {
   }
 
   /**
-   * Unwraps the underlying response value if the response was a success. Otherwise
-   * throws an exception.
+   * Unwraps the underlying response value if the response was a success. 
+   * Otherwise throws an exception, error type is object from server
    */
   public getValueOrThrow(): T {
+    if (this.success)
+      return this.value;
+    else
+      throw this.response.data;
+  }
+
+  /**
+   * Unwraps the underlying response value if the response was a success. 
+   * Otherwise throws an exception, error type is string.
+   */
+  public getValueOrThrowErrorMessage(): T {
     this.ensureSuccess();
     return this.value;
   }
