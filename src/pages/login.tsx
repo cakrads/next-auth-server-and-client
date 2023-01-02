@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import Link from "next/link";
 
+import { AuthModule } from "@src/services";
 import Field from "@components/field";
+import { useRouter } from "next/router";
 
-function SignIn() {
+function Login() {
+  const router = useRouter();
   const [errorMsg, setErrorMsg] = useState<string>("");
 
   async function handleSubmit(event: React.SyntheticEvent) {
@@ -18,7 +21,13 @@ function SignIn() {
 
     try {
       console.log(email, password);
+      const result = await AuthModule.AuthService.login({ email, password });
+      if (result.accessToken) {
+        console.log("Login Success");
+        router.replace("/protected");
+      }
     } catch (error: any) {
+      console.log({ error });
       setErrorMsg(error.message);
     }
   }
@@ -49,4 +58,4 @@ function SignIn() {
   );
 }
 
-export default SignIn;
+export default Login;
