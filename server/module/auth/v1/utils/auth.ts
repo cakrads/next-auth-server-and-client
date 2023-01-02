@@ -1,6 +1,6 @@
 import { serialize, parse } from "cookie";
 
-import { AUTH_CONFIG } from "@server/config";
+import { AUTH_CONFIG } from "@server/configs";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -12,7 +12,7 @@ export const getTokenBearer = (req: NextApiRequest) => {
 };
 
 export function setTokenCookie(res: NextApiResponse, token: string) {
-  const cookie = serialize(AUTH_CONFIG.COOKIE_TOKEN_NAME, token, {
+  const cookie = serialize(AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME, token, {
     maxAge: AUTH_CONFIG.COOKIE_MAX_AGE,
     expires: new Date(Date.now() + AUTH_CONFIG.COOKIE_MAX_AGE * 1000),
     httpOnly: true,
@@ -25,7 +25,7 @@ export function setTokenCookie(res: NextApiResponse, token: string) {
 }
 
 export function removeTokenCookie(res: NextApiResponse) {
-  const cookie = serialize(AUTH_CONFIG.COOKIE_TOKEN_NAME, "", {
+  const cookie = serialize(AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME, "", {
     maxAge: -1,
     path: "/",
   });
@@ -44,5 +44,5 @@ export function parseCookies(req: NextApiRequest) {
 
 export function getTokenCookie(req: NextApiRequest) {
   const cookies = parseCookies(req);
-  return cookies[AUTH_CONFIG.COOKIE_TOKEN_NAME];
+  return cookies[AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME];
 }

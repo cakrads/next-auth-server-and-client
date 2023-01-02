@@ -13,6 +13,10 @@ export type TAuthToken = {
   refreshToken: string;
 };
 
-export type TUserList = (TUser & TAuthToken)[];
-
 export type TAuth = TUser & TAuthPassword & TAuthToken;
+
+export type TAuthData = {
+  profile: TUser;
+} & TAuthToken;
+
+export * from "./http-response";
