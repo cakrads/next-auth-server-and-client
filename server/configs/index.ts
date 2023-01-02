@@ -7,5 +7,6 @@ export const AUTH_CONFIG = {
     Number(process.env.JWT_REFRESH_TOKEN_EXPIRED)
   ),
   COOKIE_MAX_AGE: <number>Number(process.env.COOKIE_MAX_AGE),
-  COOKIE_TOKEN_NAME: <string>process.env.COOKIE_TOKEN_NAME,
+  COOKIE_ACCESS_TOKEN_NAME: <string>process.env.COOKIE_ACCESS_TOKEN_NAME,
+  COOKIE_REFRESH_TOKEN_NAME: <string>process.env.COOKIE_REFRESH_TOKEN_NAME,
 };

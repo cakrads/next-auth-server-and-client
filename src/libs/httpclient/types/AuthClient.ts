@@ -9,7 +9,7 @@ export interface IAuthClient {
    * token promise of the client.
    * @returns {Promise<void>}
    */
-  refreshToken(): Promise<void>;
+  refreshToken(): Promise<TAuthToken>;
 
   /**
    * Updates the header to be sent with an HTTP
@@ -35,8 +35,8 @@ export interface IAuthClientOptions {
 }
 
 export type TAuthToken = {
-  access_token: string;
-  refresh_token: string;
+  accessToken: string;
+  refreshToken: string;
 };
 
 export interface IBearerAuth {

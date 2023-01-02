@@ -8,8 +8,8 @@ import {
   IAuthClient,
   IAuthClientOptions,
   IBearerAuth,
+  TAuthToken,
 } from "./types/AuthClient";
-import { TAuthToken } from "types/*";
 
 /**
  * instead of having to send the url token requres
@@ -51,18 +51,19 @@ export class AuthClient implements IAuthClient {
     // if the promise fails, this will fail
     try {
       // get from cookies
-      if (!this.authToken) {
+      console.log(1, this.authToken);
+      if (!this.authToken.accessToken) {
         this.getTokenFromCookies();
       }
 
-      // get from server
-      if (!this.authToken) {
+      // get by refresh token server
+      console.log(2, this.authToken);
+      if (!this.authToken.accessToken) {
         await this.refreshToken();
       }
 
-      const token = this.authToken;
-      if (token.accessToken) {
-        return { Authorization: "Bearer " + token.accessToken };
+      if (this.authToken.accessToken) {
+        return { Authorization: "Bearer " + this.authToken.accessToken };
       } else {
         // no token available
         console.warn("No bearer token available.");
@@ -75,38 +76,57 @@ export class AuthClient implements IAuthClient {
     }
   }
 
+  async setAuthToken(): Promise<void> {
+    // get from cookies
+    console.log(1, this.authToken);
+    if (!this.authToken.accessToken) {
+      this.getTokenFromCookies();
+    }
+
+    // get from refresh token server
+    console.log(2, this.authToken);
+    if (!this.authToken.accessToken) {
+      await this.refreshToken();
+    }
+  }
+
   /**
    * Get the available token from Cookies
    * @returns {void}
    */
-  getTokenFromCookies(): void {
+  getTokenFromCookies(): TAuthToken {
     const nextContext = this.options?.nextContext;
     let accessToken: CookieValueTypes;
     let refreshToken: CookieValueTypes;
 
-    // SSR
-    const req = nextContext?.req;
-    const res = nextContext?.res;
-    if (!req && !res) {
+    if (nextContext?.req) {
+      // SSR
+      const req = nextContext?.req;
+      const res = nextContext?.res;
       accessToken = getCookie(AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME, {
         req,
         res,
-      });
+      }) ?? "";
       refreshToken = getCookie(AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME, {
         req,
         res,
-      });
+      }) ?? "";
+    } else {
+      // browser
+      accessToken = getCookie(AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME) ?? "";
+      refreshToken = getCookie(AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME) ?? "";
     }
 
-    // browser
-    accessToken = getCookie(AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME);
-    refreshToken = getCookie(AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME);
 
-    if (!accessToken && !refreshToken)
-      this.authToken = {
-        accessToken: <string>accessToken,
-        refreshToken: <string>refreshToken,
-      };
+    this.authToken = {
+      accessToken: <string>accessToken,
+      refreshToken: <string>refreshToken,
+    };
+
+    return {
+      accessToken: <string>accessToken,
+      refreshToken: <string>refreshToken,
+    };
   }
 
   /**
@@ -117,9 +137,10 @@ export class AuthClient implements IAuthClient {
     await setCookie(AUTH_CONFIG.COOKIE_REFRESH_TOKEN_NAME, refreshToken);
   }
 
-  public async refreshToken(): Promise<void> {
+  public async refreshToken(): Promise<TAuthToken> {
     const authToken = await this.refreshTokenExecute();
     this.authToken = authToken;
+    return authToken;
   }
 
   private async refreshTokenExecute(): Promise<TAuthToken> {
