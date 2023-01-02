@@ -25,6 +25,9 @@ export class HttpResult<T = any> extends HttpResponse {
   public getValueOrThrow(): T {
     if (this.success)
       return this.value;
+
+    if (this.error)
+      throw this.error;
     else
       throw this.response.data;
   }
