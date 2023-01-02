@@ -27,7 +27,7 @@ const RETRY_DELAY = 1000;
  * so we can access user.fullName
  */
 export declare type CustomType<T> = {
-  new(...args: any[]): T;
+  new (...args: any[]): T;
 };
 
 /**
@@ -69,7 +69,8 @@ export class HttpClient {
 
   // singleton static method
   public static getInstance(
-    baseUri: string = "", options?: IHttpClientOptions
+    baseUri: string = "",
+    options?: IHttpClientOptions
   ): HttpClient {
     if (!HttpClient.instance)
       HttpClient.instance = new HttpClient(baseUri, options);

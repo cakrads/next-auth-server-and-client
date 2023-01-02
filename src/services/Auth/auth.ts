@@ -14,9 +14,9 @@ const checkUserAuthentication = async (
   ctx: NextPageContext
 ): Promise<TAuthGuard> => {
   try {
-    const data = await AuthRepository.getCurrentUser(ctx);
+    const response = await AuthRepository.getCurrentUser(ctx);
     return {
-      data: data,
+      data: response.data,
       error: {} as TAuthGuardError,
     };
   } catch (error: any) {
@@ -30,27 +30,27 @@ const checkUserAuthentication = async (
   }
 };
 
-const register = async (params: DTO.TRegisterDto, options?: IHttpClientOptions) => {
-  const payload: DTO.TRegisterDto = await DTO.registerSchema.validate(
-    params
-  );
-  return await AuthRepository.register(payload, options);
+const register = async (
+  params: DTO.TRegisterDto,
+  options?: IHttpClientOptions
+) => {
+  const payload: DTO.TRegisterDto = await DTO.registerSchema.validate(params);
+  const response = await AuthRepository.register(payload, options);
+  return response.data;
 };
 
 const login = async (params: DTO.TLoginDto, options?: IHttpClientOptions) => {
-  const payload: DTO.TLoginDto = await DTO.loginSchema.validate(
-    params
-  );
+  const payload: DTO.TLoginDto = await DTO.loginSchema.validate(params);
 
-  const request = await AuthRepository.login(payload, options);
-  const accessToken = request.accessToken;
-  const refreshToken = request.refreshToken;
+  const response = await AuthRepository.login(payload, options);
+  const accessToken = response.data.accessToken;
+  const refreshToken = response.data.refreshToken;
 
   // save to cookies
   const authLib = new AuthClient();
-  authLib.setTokenToCookies(accessToken, refreshToken);
+  await authLib.setTokenToCookies(accessToken, refreshToken);
 
-  return request;
+  return response.data;
 };
 
 const AuthServices = {

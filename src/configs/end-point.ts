@@ -1,9 +1,7 @@
 const AUTH = (version: string) => {
   const _module = "auth";
 
-  const genertePath = (path: string) => (
-    `/${_module}/${version}/${path}`
-  );
+  const genertePath = (path: string) => `/${_module}/${version}/${path}`;
 
   return {
     LOGIN: genertePath("/login"),
@@ -16,9 +14,7 @@ const AUTH = (version: string) => {
 const USER = (version: string) => {
   const _module = "user";
 
-  const genertePath = (path: string) => (
-    `/${_module}/${version}/${path}`
-  );
+  const genertePath = (path: string) => `/${_module}/${version}/${path}`;
 
   return {
     ME: genertePath("/me"),

@@ -7,7 +7,7 @@ import * as DTO from "../dto";
 import AuthModel from "../model";
 
 import type { NextApiRequest, NextApiResponse } from "next";
-import { TAuth, TUser } from "types";
+import { TAuth, TRegister, TLogin, TRefreshToken } from "types";
 
 const register = async (req: NextApiRequest, res: NextApiResponse) => {
   const registerPayload: DTO.TRegisterDto = await DTO.registerSchema.validate(
@@ -29,7 +29,7 @@ const register = async (req: NextApiRequest, res: NextApiResponse) => {
     accessToken: "",
     refreshToken: "",
   });
-  const response: TUser = {
+  const response: TRegister = {
     email: result.email,
   };
   helpers.response.success(res, response);
@@ -56,8 +56,10 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
 
   AuthUtils.setTokenCookie(res, accessToken);
 
-  const result = {
-    email: user.email,
+  const result: TLogin = {
+    profile: {
+      email: user.email,
+    },
     accessToken,
     refreshToken,
   };
@@ -85,8 +87,8 @@ const refreshToken = async (req: NextApiRequest, res: NextApiResponse) => {
 
   AuthUtils.setTokenCookie(res, newAccessToken);
 
-  const result = {
-    email: user.email,
+  const result: TRefreshToken = {
+    profile: { email: user.email },
     accessToken: newAccessToken,
     refreshToken: newRefreshToken,
   };

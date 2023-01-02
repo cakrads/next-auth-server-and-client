@@ -112,9 +112,9 @@ export class AuthClient implements IAuthClient {
   /**
    * Set token to Cookies
    */
-  setTokenToCookies(accessToken: string, refreshToken: string): void {
-    setCookie(AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME, accessToken);
-    setCookie(AUTH_CONFIG.COOKIE_REFRESH_TOKEN_NAME, refreshToken);
+  async setTokenToCookies(accessToken: string, refreshToken: string) {
+    await setCookie(AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME, accessToken);
+    await setCookie(AUTH_CONFIG.COOKIE_REFRESH_TOKEN_NAME, refreshToken);
   }
 
   public async refreshToken(): Promise<void> {

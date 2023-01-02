@@ -3,13 +3,6 @@ export type TUser = {
   password?: string;
 };
 
-/**
- * Need for AuthGuard Props
- */
-export type TAuthData = {
-  profile: TUser;
-} & TAuthToken;
-
 export type TAuthPassword = {
   hash: string;
   salt: string;
@@ -20,6 +13,10 @@ export type TAuthToken = {
   refreshToken: string;
 };
 
-export type TUserList = (TUser & TAuthToken)[];
-
 export type TAuth = TUser & TAuthPassword & TAuthToken;
+
+export type TAuthData = {
+  profile: TUser;
+} & TAuthToken;
+
+export * from "./http-response";

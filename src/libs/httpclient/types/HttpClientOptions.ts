@@ -3,7 +3,6 @@ import { IAuthClient } from "./AuthClient";
 
 import { GenericAbortSignal } from "axios";
 
-
 /**
  * Options for the HTTP client.
  */
