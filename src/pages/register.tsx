@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 
 import Field from "@components/field";
+import { AuthModule } from "@src/services";
 
 function Register() {
   const [errorMsg, setErrorMsg] = useState<string>("");
@@ -20,6 +21,7 @@ function Register() {
 
     try {
       console.log(email, password);
+      await AuthModule.AuthService.register({ email, password });
       router.push("/login");
     } catch (error: any) {
       setErrorMsg(error.message);
