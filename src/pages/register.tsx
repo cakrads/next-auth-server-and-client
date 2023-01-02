@@ -20,7 +20,6 @@ function Register() {
     const password = target.password.value;
 
     try {
-      console.log(email, password);
       await AuthModule.AuthService.register({ email, password });
       router.push("/login");
     } catch (error: any) {
