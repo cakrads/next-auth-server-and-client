@@ -20,14 +20,12 @@ function Login() {
     const password = target.password.value;
 
     try {
-      console.log(email, password);
       const result = await AuthModule.AuthService.login({ email, password });
       if (result.accessToken) {
         console.log("Login Success");
         router.replace("/protected");
       }
     } catch (error: any) {
-      console.log({ error });
       setErrorMsg(error.message);
     }
   }

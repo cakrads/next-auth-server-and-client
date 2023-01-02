@@ -51,13 +51,11 @@ export class AuthClient implements IAuthClient {
     // if the promise fails, this will fail
     try {
       // get from cookies
-      console.log(1, this.authToken);
       if (!this.authToken.accessToken) {
         this.getTokenFromCookies();
       }
 
       // get by refresh token server
-      console.log(2, this.authToken);
       if (!this.authToken.accessToken) {
         await this.refreshToken();
       }
@@ -73,20 +71,6 @@ export class AuthClient implements IAuthClient {
       // throw away the promise (so we'll retry on subsequent invocations) and escalate the error
       this.authToken;
       throw e;
-    }
-  }
-
-  async setAuthToken(): Promise<void> {
-    // get from cookies
-    console.log(1, this.authToken);
-    if (!this.authToken.accessToken) {
-      this.getTokenFromCookies();
-    }
-
-    // get from refresh token server
-    console.log(2, this.authToken);
-    if (!this.authToken.accessToken) {
-      await this.refreshToken();
     }
   }
 
