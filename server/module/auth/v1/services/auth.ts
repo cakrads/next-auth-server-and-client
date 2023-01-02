@@ -7,7 +7,7 @@ import * as DTO from "../dto";
 import AuthModel from "../model";
 
 import type { NextApiRequest, NextApiResponse } from "next";
-import { TAuth } from "types";
+import { TAuth, TUser } from "types";
 
 const register = async (req: NextApiRequest, res: NextApiResponse) => {
   const registerPayload: DTO.TRegisterDto = await DTO.registerSchema.validate(
@@ -29,7 +29,10 @@ const register = async (req: NextApiRequest, res: NextApiResponse) => {
     accessToken: "",
     refreshToken: "",
   });
-  helpers.response.success(res, result);
+  const response: TUser = {
+    email: result.email,
+  };
+  helpers.response.success(res, response);
 };
 
 const login = async (req: NextApiRequest, res: NextApiResponse) => {
