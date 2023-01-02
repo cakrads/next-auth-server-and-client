@@ -46,8 +46,6 @@ const useRepository = (): IUseRepository => {
     const result: HttpResult<TDataResult> = await httpClient.get<TDataResult>(
       "/testing-http-lib"
     );
-    console.log("Method", result.getValueOrThrow().method);
-    console.log("result.response", result.response);
     return result.getValueOrThrow().data;
   };
 
@@ -56,8 +54,6 @@ const useRepository = (): IUseRepository => {
     const result: HttpResult<TDataResult> = await httpClient.post<TDataResult>(
       "api/test"
     );
-    console.log("Method", result.getValueOrThrow().method);
-    console.log("result.response", result.response);
     return result.getValueOrThrow().data;
   };
 
@@ -66,8 +62,6 @@ const useRepository = (): IUseRepository => {
     const result: HttpResult<TDataResult> = await httpClient.put<TDataResult>(
       "api/test"
     );
-    console.log("Method", result.getValueOrThrow().method);
-    console.log("result.response", result.response);
     return result.getValueOrThrow().data;
   };
 
@@ -75,8 +69,6 @@ const useRepository = (): IUseRepository => {
     const httpClient = new HttpClient(URL_API, options);
     const result: HttpResult<TDataResult> =
       await httpClient.delete<TDataResult>("api/test");
-    console.log("Method", result.getValueOrThrow().method);
-    console.log("result.response", result.response);
     return result.getValueOrThrow().data;
   };
 
@@ -98,7 +90,6 @@ const useAction = (): IUseAction => {
   const [error, setError] = useState<TError>({} as TError);
 
   useEffect(() => {
-    console.log("effect run");
     const abortController = abortControllerRef.current;
     const signal = abortController.signal;
     const getData = async () => {
