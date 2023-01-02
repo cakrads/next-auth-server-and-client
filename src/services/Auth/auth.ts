@@ -15,7 +15,6 @@ const checkUserAuthentication = async (
 ): Promise<TAuthGuard> => {
   try {
     const data = await AuthRepository.getCurrentUser(ctx);
-
     return {
       data: data,
       error: {} as TAuthGuardError,
@@ -29,6 +28,13 @@ const checkUserAuthentication = async (
       },
     };
   }
+};
+
+const register = async (params: DTO.TRegisterDto, options?: IHttpClientOptions) => {
+  const payload: DTO.TRegisterDto = await DTO.registerSchema.validate(
+    params
+  );
+  return await AuthRepository.register(payload, options);
 };
 
 const login = async (params: DTO.TLoginDto, options?: IHttpClientOptions) => {
@@ -50,6 +56,7 @@ const login = async (params: DTO.TLoginDto, options?: IHttpClientOptions) => {
 const AuthServices = {
   getCurrentUser,
   checkUserAuthentication,
+  register,
   login,
 };
 
