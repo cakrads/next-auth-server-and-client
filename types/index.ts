@@ -8,7 +8,7 @@ export type TUser = {
  */
 export type TAuthData = {
   profile: TUser;
-};
+} & TAuthToken;
 
 export type TAuthPassword = {
   hash: string;
