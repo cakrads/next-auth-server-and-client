@@ -3,7 +3,7 @@ import React from "react";
 import Router from "next/router";
 import { NextPage } from "next";
 
-import { AuthService } from "./services";
+import { AuthModule } from "@src/services";
 
 import { TAuthGuard, TAuthGuardProps } from "./types";
 
@@ -13,7 +13,8 @@ const AuthGuardContainer = (WrappedComponent: any) => {
   const component: NextPage = ({ ...props }) => <WrappedComponent {...props} />;
 
   component.getInitialProps = async (ctx): Promise<TAuthGuardProps> => {
-    const result: TAuthGuard = await AuthService.checkUserAuthentication(ctx);
+    const result: TAuthGuard =
+      await AuthModule.AuthService.checkUserAuthentication(ctx);
     console.log({ result });
     // Are you an authorized user or not?
     if (!result.data || result.error) {
