@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
-import { CookieValueTypes, getCookie } from "cookies-next"; // https://github.com/andreizanik/cookies-next
+import { CookieValueTypes, getCookie, setCookie } from "cookies-next"; // https://github.com/andreizanik/cookies-next
 
 import { HttpResponse } from "./HttpResponse";
 import { AUTH_CONFIG } from "@src/configs";
@@ -25,11 +25,11 @@ export class AuthClient implements IAuthClient {
   private authToken: TAuthToken;
   client: AxiosInstance;
 
-  constructor(private options: IAuthClientOptions) {
+  constructor(private options?: IAuthClientOptions) {
     const headers = {
       "Content-type": "application/json",
     };
-    console.log({ URL_TOKEN_REQUEST });
+
     const config = {
       baseURL: this.options?.tokenRequestUri || URL_TOKEN_REQUEST,
       timeout: 5000,
@@ -80,13 +80,13 @@ export class AuthClient implements IAuthClient {
    * @returns {void}
    */
   getTokenFromCookies(): void {
-    const { nextContext } = this.options;
+    const nextContext = this.options?.nextContext;
     let accessToken: CookieValueTypes;
     let refreshToken: CookieValueTypes;
 
     // SSR
-    const req = nextContext.req;
-    const res = nextContext.res;
+    const req = nextContext?.req;
+    const res = nextContext?.res;
     if (!req && !res) {
       accessToken = getCookie(AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME, {
         req,
@@ -109,6 +109,14 @@ export class AuthClient implements IAuthClient {
       };
   }
 
+  /**
+   * Set token to Cookies
+   */
+  setTokenToCookies(accessToken: string, refreshToken: string): void {
+    setCookie(AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME, accessToken);
+    setCookie(AUTH_CONFIG.COOKIE_REFRESH_TOKEN_NAME, refreshToken);
+  }
+
   public async refreshToken(): Promise<void> {
     const authToken = await this.refreshTokenExecute();
     this.authToken = authToken;
@@ -126,7 +134,7 @@ export class AuthClient implements IAuthClient {
 
       throw new Error(
         "Token fetch error - no 'accessToken' found in resolved JSON: " +
-          JSON.stringify(json)
+        JSON.stringify(json)
       );
     } else {
       throw new Error("Token fetch error: " + result.getErrorMessage());

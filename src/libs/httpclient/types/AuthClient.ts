@@ -24,6 +24,7 @@ export interface IAuthClient {
 export interface IAuthClientOptions {
   /**
    * res from next.js to get Auth in cookies
+   * should be optional for setCookies only
    */
   nextContext: NextPageContext;
 
