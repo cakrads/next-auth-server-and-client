@@ -126,18 +126,19 @@ export class AuthClient implements IAuthClient {
     const result: HttpResponse = await this.requestRefreshToken();
     if (result.success) {
       // parse the returned payload
-      const json: any = await result.response.data;
-      const authToken: TAuthToken = json && json.accessToken;
-      if (authToken) {
-        return authToken;
+      const data: any = await result.response.data;
+      const authToken: TAuthToken = data && data.accessToken;
+      if (!authToken) {
+        throw data;
       }
 
-      throw new Error(
-        "Token fetch error - no 'accessToken' found in resolved JSON: " +
-        JSON.stringify(json)
-      );
+      return authToken;
+      // throw new Error(
+      //   "Token fetch error - no 'accessToken' found in resolved JSON: " +
+      //   JSON.stringify(data)
+      // );
     } else {
-      throw new Error("Token fetch error: " + result.getErrorMessage());
+      throw result.response.data;
     }
   }
 
