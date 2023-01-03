@@ -1,7 +1,7 @@
 import createHttpError from "http-errors";
 
 import * as helpers from "@server/helpers";
-import TokenServices from "./token";
+import TokenService from "./token";
 import { AuthUtils, JWTUtils, PasswordUtils } from "../utils";
 import * as DTO from "../dto";
 import AuthModel from "../model";
@@ -76,7 +76,7 @@ const refreshToken = async (req: NextApiRequest, res: NextApiResponse) => {
     throw new createHttpError.BadRequest();
   }
 
-  const user: TAuth = await TokenServices.verifyRefreshToken(refreshToken);
+  const user: TAuth = await TokenService.verifyRefreshToken(refreshToken);
 
   const newAccessToken = await JWTUtils.signAccessToken(user);
   const newRefreshToken = await JWTUtils.signRefreshToken(user);
@@ -99,15 +99,8 @@ const refreshToken = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const logout = async (req: NextApiRequest, res: NextApiResponse) => {
-  const payloadLogout: DTO.TLogoutDto = await DTO.logoutSchema.validate(
-    req.body
-  );
-
-  const { refreshToken } = payloadLogout;
-  if (!refreshToken) {
-    throw new createHttpError.BadRequest();
-  }
-  const user = await TokenServices.verifyRefreshToken(refreshToken);
+  const user = await TokenService.verifyAccessToken(req);
+  if (!user) throw new createHttpError.Unauthorized("User not found");
 
   AuthModel.updateToken(user.email, { accessToken: "", refreshToken: "" });
 
