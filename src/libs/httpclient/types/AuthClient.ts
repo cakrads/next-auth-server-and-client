@@ -26,7 +26,7 @@ export interface IAuthClientOptions {
    * res from next.js to get Auth in cookies
    * should be optional for setCookies only
    */
-  nextContext: NextPageContext;
+  nextContext?: NextPageContext;
 
   /**
    * Request URI to be used. For Auth0, this follows the scheme 'https://baseUri/oauth/token'.
