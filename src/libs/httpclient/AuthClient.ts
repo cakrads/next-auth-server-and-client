@@ -50,15 +50,8 @@ export class AuthClient implements IAuthClient {
     // await the auth token from cookies/server if it's not ready yet.
     // if the promise fails, this will fail
     try {
-      // get from cookies
-      if (!this.authToken.accessToken) {
-        this.getTokenFromCookies();
-      }
-
-      // get by refresh token server
-      if (!this.authToken.accessToken) {
-        await this.refreshToken();
-      }
+      // always set this.authToken with new cookie
+      this.setTokenFromCookies();
 
       if (this.authToken.accessToken) {
         return { Authorization: "Bearer " + this.authToken.accessToken };
@@ -78,7 +71,7 @@ export class AuthClient implements IAuthClient {
    * Get the available token from Cookies
    * @returns {void}
    */
-  getTokenFromCookies(): void {
+  setTokenFromCookies(): void {
     const nextContext = this.options?.nextContext;
     let accessToken: CookieValueTypes;
     let refreshToken: CookieValueTypes;
