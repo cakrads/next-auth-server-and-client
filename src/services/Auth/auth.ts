@@ -4,7 +4,7 @@ import AuthRepository from "./repository";
 
 import { TAuthGuard } from "@src/containers/AuthGuard";
 import * as DTO from "./types";
-import { AuthClient, IHttpClientOptions } from "@src/libs/httpclient";
+import { IHttpClientOptions } from "@src/libs/httpclient";
 
 const getCurrentUser = async (ctx: NextPageContext) => {
   return await AuthRepository.getCurrentUser(ctx);
@@ -43,12 +43,10 @@ const login = async (params: DTO.TLoginDto, options?: IHttpClientOptions) => {
   const payload: DTO.TLoginDto = await DTO.loginSchema.validate(params);
 
   const response = await AuthRepository.login(payload, options);
-  const accessToken = response.data.accessToken;
-  const refreshToken = response.data.refreshToken;
 
-  // save to cookies
-  const authLib = new AuthClient();
-  await authLib.setTokenToCookies(accessToken, refreshToken);
+  // no need set Cookies cause has been set in server
+  // const authLib = new AuthClient();
+  // await authLib.setTokenToCookies(accessToken, refreshToken);
 
   return response.data;
 };
