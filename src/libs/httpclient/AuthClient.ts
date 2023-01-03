@@ -78,7 +78,7 @@ export class AuthClient implements IAuthClient {
    * Get the available token from Cookies
    * @returns {void}
    */
-  getTokenFromCookies(): TAuthToken {
+  getTokenFromCookies(): void {
     const nextContext = this.options?.nextContext;
     let accessToken: CookieValueTypes;
     let refreshToken: CookieValueTypes;
@@ -87,27 +87,22 @@ export class AuthClient implements IAuthClient {
       // SSR
       const req = nextContext?.req;
       const res = nextContext?.res;
+
       accessToken = getCookie(AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME, {
         req,
         res,
       }) ?? "";
-      refreshToken = getCookie(AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME, {
+      refreshToken = getCookie(AUTH_CONFIG.COOKIE_REFRESH_TOKEN_NAME, {
         req,
         res,
       }) ?? "";
     } else {
       // browser
       accessToken = getCookie(AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME) ?? "";
-      refreshToken = getCookie(AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME) ?? "";
+      refreshToken = getCookie(AUTH_CONFIG.COOKIE_REFRESH_TOKEN_NAME) ?? "";
     }
 
-
     this.authToken = {
-      accessToken: <string>accessToken,
-      refreshToken: <string>refreshToken,
-    };
-
-    return {
       accessToken: <string>accessToken,
       refreshToken: <string>refreshToken,
     };
@@ -122,6 +117,9 @@ export class AuthClient implements IAuthClient {
   }
 
   public async refreshToken(): Promise<TAuthToken> {
+    if (!this.authToken.refreshToken)
+      throw new Error("No Auth - Refresh Token is empty");
+
     const authToken = await this.refreshTokenExecute();
     this.authToken = authToken;
     return authToken;
