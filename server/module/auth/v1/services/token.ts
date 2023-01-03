@@ -31,7 +31,7 @@ const verifyRefreshToken = async (refreshToken: string): Promise<TAuth> => {
   if (!user) throw new createHttpError.Unauthorized("User not found");
 
   const isTokenMatch = refreshToken === user?.refreshToken;
-  if (!isTokenMatch) throw createHttpError.Unauthorized();
+  if (!isTokenMatch) throw createHttpError.Unauthorized("User not allowed");
 
   return user;
 };
