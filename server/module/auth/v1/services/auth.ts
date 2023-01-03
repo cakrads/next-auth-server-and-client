@@ -54,7 +54,8 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
     refreshToken,
   });
 
-  AuthUtils.setTokenCookie(res, accessToken);
+  AuthUtils.setAccessTokenToCookie({ req, res, accessToken });
+  AuthUtils.setRefreshTokenToCookie({ req, res, refreshToken });
 
   const result: TLogin = {
     profile: {
@@ -85,7 +86,8 @@ const refreshToken = async (req: NextApiRequest, res: NextApiResponse) => {
     refreshToken: newRefreshToken,
   });
 
-  AuthUtils.setTokenCookie(res, newAccessToken);
+  AuthUtils.setAccessTokenToCookie({ req, res, accessToken: newAccessToken });
+  AuthUtils.setRefreshTokenToCookie({ req, res, refreshToken: newRefreshToken });
 
   const result: TRefreshToken = {
     profile: { email: user.email },
@@ -109,7 +111,7 @@ const logout = async (req: NextApiRequest, res: NextApiResponse) => {
 
   AuthModel.updateToken(user.email, { accessToken: "", refreshToken: "" });
 
-  AuthUtils.setTokenCookie(res, "");
+  AuthUtils.removeTokenCookie(req, res);
 
   helpers.response.success(res, {});
 };
