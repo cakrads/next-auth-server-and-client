@@ -50,17 +50,8 @@ export class AuthClient implements IAuthClient {
     // await the auth token from cookies/server if it's not ready yet.
     // if the promise fails, this will fail
     try {
-      // get from cookies
-      console.log(1, this.authToken);
-      if (!this.authToken.accessToken) {
-        this.getTokenFromCookies();
-      }
-
-      // get by refresh token server
-      console.log(2, this.authToken);
-      if (!this.authToken.accessToken) {
-        await this.refreshToken();
-      }
+      // always set this.authToken with new cookie
+      this.setTokenFromCookies();
 
       if (this.authToken.accessToken) {
         return { Authorization: "Bearer " + this.authToken.accessToken };
@@ -76,25 +67,11 @@ export class AuthClient implements IAuthClient {
     }
   }
 
-  async setAuthToken(): Promise<void> {
-    // get from cookies
-    console.log(1, this.authToken);
-    if (!this.authToken.accessToken) {
-      this.getTokenFromCookies();
-    }
-
-    // get from refresh token server
-    console.log(2, this.authToken);
-    if (!this.authToken.accessToken) {
-      await this.refreshToken();
-    }
-  }
-
   /**
    * Get the available token from Cookies
    * @returns {void}
    */
-  getTokenFromCookies(): TAuthToken {
+  setTokenFromCookies(): void {
     const nextContext = this.options?.nextContext;
     let accessToken: CookieValueTypes;
     let refreshToken: CookieValueTypes;
@@ -103,27 +80,22 @@ export class AuthClient implements IAuthClient {
       // SSR
       const req = nextContext?.req;
       const res = nextContext?.res;
+
       accessToken = getCookie(AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME, {
         req,
         res,
       }) ?? "";
-      refreshToken = getCookie(AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME, {
+      refreshToken = getCookie(AUTH_CONFIG.COOKIE_REFRESH_TOKEN_NAME, {
         req,
         res,
       }) ?? "";
     } else {
       // browser
       accessToken = getCookie(AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME) ?? "";
-      refreshToken = getCookie(AUTH_CONFIG.COOKIE_ACCESS_TOKEN_NAME) ?? "";
+      refreshToken = getCookie(AUTH_CONFIG.COOKIE_REFRESH_TOKEN_NAME) ?? "";
     }
 
-
     this.authToken = {
-      accessToken: <string>accessToken,
-      refreshToken: <string>refreshToken,
-    };
-
-    return {
       accessToken: <string>accessToken,
       refreshToken: <string>refreshToken,
     };
@@ -138,6 +110,9 @@ export class AuthClient implements IAuthClient {
   }
 
   public async refreshToken(): Promise<TAuthToken> {
+    if (!this.authToken.refreshToken)
+      throw new Error("No Auth - Refresh Token is empty");
+
     const authToken = await this.refreshTokenExecute();
     this.authToken = authToken;
     return authToken;
