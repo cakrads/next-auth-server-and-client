@@ -29,9 +29,9 @@ export const signRefreshToken = async (user: TUser) => {
   return await JWT.sign(payload, secret, options);
 };
 
-export const getJWTPayload = async (refreshToken: string) => {
+export const getJWTPayload = async (token: string) => {
   const payload: any = await JWT.verify(
-    refreshToken,
+    token,
     AUTH_CONFIG.JWT_PRIVATE_KEY
   );
   if (!payload) {
