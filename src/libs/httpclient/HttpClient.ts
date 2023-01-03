@@ -9,8 +9,8 @@ import { IHttpClientOptions } from "./types/HttpClientOptions";
 import { IJsonProcessor } from "./types/JsonProcessing";
 import { IRetryStrategy } from "./types/RetryStrategy";
 
-const MAX_ATTEMPTS = 10000;
-const TIMEOUT = 3;
+const MAX_ATTEMPTS = 3;
+const TIMEOUT = 5000;
 const RETRY_DELAY = 1000;
 
 /**
@@ -27,7 +27,7 @@ const RETRY_DELAY = 1000;
  * so we can access user.fullName
  */
 export declare type CustomType<T> = {
-  new (...args: any[]): T;
+  new(...args: any[]): T;
 };
 
 /**
@@ -46,8 +46,8 @@ export class HttpClient {
 
   constructor(baseUri: string = "", options?: IHttpClientOptions) {
     const defaultOptions: IHttpClientOptions = {
-      timeout: MAX_ATTEMPTS,
-      maxAttempts: TIMEOUT,
+      timeout: TIMEOUT,
+      maxAttempts: MAX_ATTEMPTS,
       retryDelay: RETRY_DELAY,
       retryStrategy: IRetryStrategy.Exponential,
       authClient: undefined,
