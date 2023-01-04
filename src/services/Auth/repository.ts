@@ -40,10 +40,19 @@ const login = async (data: DTO.TLoginDto, options?: IHttpClientOptions) => {
   return response.getValueOrThrow();
 };
 
+const logout = async (nextContext?: NextPageContext, options?: IHttpClientOptions) => {
+  const authClient = new AuthClient({ nextContext });
+  const httpClient = new HttpClient(URL_API, { ...options, authClient });
+  const response: HttpResult<TLoginResponse> =
+    await httpClient.delete<TLoginResponse>(END_POINT.AUTH.LOGOUT);
+  return response.getValueOrThrow();
+};
+
 const AuthRepository = {
   getCurrentUser,
   register,
   login,
+  logout,
 };
 
 export default AuthRepository;

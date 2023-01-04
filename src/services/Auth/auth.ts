@@ -1,10 +1,10 @@
-import { NextPageContext } from "next";
 
 import AuthRepository from "./repository";
 
+import { NextPageContext } from "next";
+import { IHttpClientOptions } from "@src/libs/httpclient";
 import { TAuthGuard } from "@src/containers/AuthGuard";
 import * as DTO from "./types";
-import { IHttpClientOptions } from "@src/libs/httpclient";
 
 const getCurrentUser = async (ctx: NextPageContext) => {
   return await AuthRepository.getCurrentUser(ctx);
@@ -51,11 +51,17 @@ const login = async (params: DTO.TLoginDto, options?: IHttpClientOptions) => {
   return response.data;
 };
 
+const logout = async (nextContext?: NextPageContext, options?: IHttpClientOptions) => {
+  const response = await AuthRepository.logout(nextContext, options);
+  return response.data;
+};
+
 const AuthServices = {
   getCurrentUser,
   checkUserAuthentication,
   register,
   login,
+  logout,
 };
 
 export default AuthServices;

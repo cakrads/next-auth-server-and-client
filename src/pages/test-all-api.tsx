@@ -7,6 +7,7 @@ import { AUTH_CONFIG, END_POINT, URL_API } from "@src/configs";
 
 import {
   TAuthData,
+  TCurrentUserReponse,
   TLoginResponse,
   TRefreshTokenResponse,
   TUserListReponse,
@@ -57,6 +58,12 @@ const useAction = () => {
     setHtttpclient();
   };
 
+  const getCurrentUser = async () => {
+    const response: HttpResult<TCurrentUserReponse> =
+      await httpclient.get<TCurrentUserReponse>(END_POINT.USER.ME);
+    console.log("me:", response.getValueOrThrow().data);
+  };
+
   const getListUser = async () => {
     console.log({ httpclient });
     const response: HttpResult<TUserListReponse> =
@@ -88,6 +95,7 @@ const useAction = () => {
     auth,
     register,
     login,
+    getCurrentUser,
     getListUser,
     refreshToken,
     logout,
@@ -95,12 +103,14 @@ const useAction = () => {
 };
 
 const HitAllAPIPage = () => {
-  const { register, login, getListUser, refreshToken, logout } = useAction();
+  const { register, login, getCurrentUser, getListUser, refreshToken, logout } =
+    useAction();
 
   const runAll = async () => {
     try {
       await register();
       await login();
+      await getCurrentUser();
       await getListUser();
       await refreshToken();
       await logout();
@@ -118,6 +128,9 @@ const HitAllAPIPage = () => {
       <br />
       <br />
       <button onClick={login}>Login</button>
+      <br />
+      <br />
+      <button onClick={getCurrentUser}>Current User</button>
       <br />
       <br />
       <button onClick={getListUser}>List User</button>
