@@ -19,7 +19,11 @@
       "@server/*": ["server/*"],
       "@server": ["server/*"],
       "types/*": ["types/index"],
-      "types": ["types/index"]
+      "types": ["types/index"],
+      "@src/*": ["src/*"],
+      "@src": ["src/"],
+      "@components/*": ["src/components/*"],
+      "@components": ["src/components/"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

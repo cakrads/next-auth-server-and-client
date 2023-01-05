@@ -13,6 +13,7 @@ yarn dev
 ```
 
 ### Check The Frontend
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to check it's run well or not in your device (:
 
 ### Check The API Server
@@ -71,8 +72,9 @@ The Api server code located in folder `/server` but rhe route to access API stil
 
 ## Folder Structure For API Server
 Here folder structure to this project:
+
 ```
-├ public/                       
+├ public/
 ├ server/                       # all code to handle API will be here
 | ├ config/                     # initial all api config, get from env
 | | db/                         # responsible for communicate to db, ex: connect()
@@ -82,8 +84,8 @@ Here folder structure to this project:
 |   ├ auth/
 |   | └ v1/                     # versioning early will help us letter
 |   |   ├ dto/                  # code for validate payload
-|   |   ├ services/              
-|   |   |   auth.ts             # register, login, refreshToken, logout 
+|   |   ├ services/
+|   |   |   auth.ts             # register, login, refreshToken, logout
 |   |   |   token.ts            # verify Access Token and match with current DB
 |   |   | utils/                # ex: generateJWT, verifyJWT, verifyHashPassword, etc
 |   |   | api-handler.ts        # handle HTTP Method and call services
@@ -95,16 +97,16 @@ Here folder structure to this project:
 |       | api-handler.ts        # handle HTTP Method and call services
 |       └ model.ts              # db query will be here
 ├ src/                          # all code to handle client/show UI will in src
-| | config/                     # initial all frontend config, get from env 
-| ├ pages/                       
+| | config/                     # initial all frontend config, get from env
+| ├ pages/
 | | └ api/                      # API route still use basic nextjs routes
-| |   ├ auth/                   
+| |   ├ auth/
 | |   | └ v1/                   # will call module.auth.v1.apiHandler
-| |   |     login.ts            
+| |   |     login.ts
 | |   |     logout.ts
 | |   |     refresh-token.ts
 | |   |     register.ts
-| |   └ user/            
+| |   └ user/
 | |      └ v1/                  # will call module.user.v1.apiHandler
 | |          list.ts
 | |          me.ts

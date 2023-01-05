@@ -7,17 +7,17 @@ import { TAuth } from "types";
 
 const verifyAccessToken = async (req: NextApiRequest): Promise<TAuth> => {
   const accessToken = AuthUtils.getTokenBearer(req);
-  if (!accessToken) throw createHttpError.Unauthorized();
+  if (!accessToken) throw createHttpError.Unauthorized("Token Bearer doesn't exists");
 
   const payload: any = await JWTUtils.getJWTPayload(accessToken);
   const ID: string = payload.aud;
-  if (!ID) throw new createHttpError.Unauthorized();
+  if (!ID) throw new createHttpError.Unauthorized("Token not valid");
 
   const user: TAuth = await AuthService.find(ID);
   if (!user) throw new createHttpError.Unauthorized("User not found");
 
   const isTokenMatch = accessToken === user?.accessToken;
-  if (!isTokenMatch) throw createHttpError.Unauthorized();
+  if (!isTokenMatch) throw createHttpError.Unauthorized("User not allowed");
 
   return user;
 };
@@ -31,7 +31,7 @@ const verifyRefreshToken = async (refreshToken: string): Promise<TAuth> => {
   if (!user) throw new createHttpError.Unauthorized("User not found");
 
   const isTokenMatch = refreshToken === user?.refreshToken;
-  if (!isTokenMatch) throw createHttpError.Unauthorized();
+  if (!isTokenMatch) throw createHttpError.Unauthorized("User not allowed");
 
   return user;
 };

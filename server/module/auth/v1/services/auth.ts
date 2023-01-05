@@ -1,13 +1,13 @@
 import createHttpError from "http-errors";
 
 import * as helpers from "@server/helpers";
-import TokenServices from "./token";
+import TokenService from "./token";
 import { AuthUtils, JWTUtils, PasswordUtils } from "../utils";
 import * as DTO from "../dto";
 import AuthModel from "../model";
 
 import type { NextApiRequest, NextApiResponse } from "next";
-import { TAuth } from "types";
+import { TAuth, TRegister, TLogin, TRefreshToken } from "types";
 
 const register = async (req: NextApiRequest, res: NextApiResponse) => {
   const registerPayload: DTO.TRegisterDto = await DTO.registerSchema.validate(
@@ -29,7 +29,10 @@ const register = async (req: NextApiRequest, res: NextApiResponse) => {
     accessToken: "",
     refreshToken: "",
   });
-  helpers.response.success(res, result);
+  const response: TRegister = {
+    email: result.email,
+  };
+  helpers.response.success(res, response);
 };
 
 const login = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -51,10 +54,13 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
     refreshToken,
   });
 
-  AuthUtils.setTokenCookie(res, accessToken);
+  AuthUtils.setAccessTokenToCookie({ req, res, accessToken });
+  AuthUtils.setRefreshTokenToCookie({ req, res, refreshToken });
 
-  const result = {
-    email: user.email,
+  const result: TLogin = {
+    profile: {
+      email: user.email,
+    },
     accessToken,
     refreshToken,
   };
@@ -70,7 +76,7 @@ const refreshToken = async (req: NextApiRequest, res: NextApiResponse) => {
     throw new createHttpError.BadRequest();
   }
 
-  const user: TAuth = await TokenServices.verifyRefreshToken(refreshToken);
+  const user: TAuth = await TokenService.verifyRefreshToken(refreshToken);
 
   const newAccessToken = await JWTUtils.signAccessToken(user);
   const newRefreshToken = await JWTUtils.signRefreshToken(user);
@@ -80,10 +86,11 @@ const refreshToken = async (req: NextApiRequest, res: NextApiResponse) => {
     refreshToken: newRefreshToken,
   });
 
-  AuthUtils.setTokenCookie(res, newAccessToken);
+  AuthUtils.setAccessTokenToCookie({ req, res, accessToken: newAccessToken });
+  AuthUtils.setRefreshTokenToCookie({ req, res, refreshToken: newRefreshToken });
 
-  const result = {
-    email: user.email,
+  const result: TRefreshToken = {
+    profile: { email: user.email },
     accessToken: newAccessToken,
     refreshToken: newRefreshToken,
   };
@@ -92,19 +99,12 @@ const refreshToken = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const logout = async (req: NextApiRequest, res: NextApiResponse) => {
-  const payloadLogout: DTO.TLogoutDto = await DTO.logoutSchema.validate(
-    req.body
-  );
-
-  const { refreshToken } = payloadLogout;
-  if (!refreshToken) {
-    throw new createHttpError.BadRequest();
-  }
-  const user = await TokenServices.verifyRefreshToken(refreshToken);
+  const user = await TokenService.verifyAccessToken(req);
+  if (!user) throw new createHttpError.Unauthorized("User not found");
 
   AuthModel.updateToken(user.email, { accessToken: "", refreshToken: "" });
 
-  AuthUtils.setTokenCookie(res, "");
+  AuthUtils.removeTokenCookie(req, res);
 
   helpers.response.success(res, {});
 };

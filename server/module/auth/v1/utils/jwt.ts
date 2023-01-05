@@ -1,7 +1,7 @@
 import JWT from "jsonwebtoken";
 import createHttpError from "http-errors";
 
-import { AUTH_CONFIG } from "@server/config";
+import { AUTH_CONFIG } from "@server/configs";
 
 import { TUser } from "types";
 
@@ -29,8 +29,11 @@ export const signRefreshToken = async (user: TUser) => {
   return await JWT.sign(payload, secret, options);
 };
 
-export const getJWTPayload = async (refreshToken: string) => {
-  const payload: any = await JWT.verify(refreshToken, AUTH_CONFIG.JWT_PRIVATE_KEY);
+export const getJWTPayload = async (token: string) => {
+  const payload: any = await JWT.verify(
+    token,
+    AUTH_CONFIG.JWT_PRIVATE_KEY
+  );
   if (!payload) {
     throw new createHttpError.Unauthorized();
   }
