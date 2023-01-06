@@ -57,9 +57,10 @@ export async function checkHashPassword(
 
 ```
 #### 2.2 Generate AccessToken and RefreshToken
-After match, the system will create `accessToken` and `refreshToken`. The expired token between both token will be diffrent cause the refreshToken will be use for create new `accessToken` when the `accessToken` expired. Wait, How about the `refreshToken` expired? User should re-login to create new `accessToken` and `refreshToken`.
+After match, the system will create `accessToken` and `refreshToken`. The expired token between both token will be diffrent cause the refreshToken will be use for create new `accessToken` when the `accessToken` expired. Wait, How about the `refreshToken` expired? User should re-login to create new `accessToken` and `refreshToken`. The `accessToken` and `refreshToken` will send to user using http-cookies.
 
-
+### 3. Authorization
+The authorization process will check from http header authorization. After success login, server will set `accessToken` and `refreshToken` in cookies. The will always embeded when http request happen. But, if user want to get authorization to access private services/end point, Client should put `accessToken` to http header authorization with `Bearer` in the begining.
 
 ## Diffrent `/server` and `/src`
 - `server/` : this folder responsible for the backend code or handle API, so all code which responsible to handle REST API will be here. But, the routes are still in `pages/api/*` folder. 
