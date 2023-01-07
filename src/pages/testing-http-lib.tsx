@@ -52,7 +52,7 @@ const useRepository = (): IUseRepository => {
   const postData = async (options?: IHttpClientOptions) => {
     const httpClient = new HttpClient(URL_API, options);
     const result: HttpResult<TDataResult> = await httpClient.post<TDataResult>(
-      "api/test"
+      "/testing-http-lib"
     );
     return result.getValueOrThrow().data;
   };
@@ -60,7 +60,7 @@ const useRepository = (): IUseRepository => {
   const putData = async (options?: IHttpClientOptions) => {
     const httpClient = new HttpClient(URL_API, options);
     const result: HttpResult<TDataResult> = await httpClient.put<TDataResult>(
-      "api/test"
+      "/testing-http-lib"
     );
     return result.getValueOrThrow().data;
   };
@@ -68,7 +68,7 @@ const useRepository = (): IUseRepository => {
   const deleteData = async (options?: IHttpClientOptions) => {
     const httpClient = new HttpClient(URL_API, options);
     const result: HttpResult<TDataResult> =
-      await httpClient.delete<TDataResult>("api/test");
+      await httpClient.delete<TDataResult>("/testing-http-lib");
     return result.getValueOrThrow().data;
   };
 
