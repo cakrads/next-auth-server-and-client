@@ -1,4 +1,5 @@
 import { setCookie, getCookie, deleteCookie } from "cookies-next";
+import { CookieSerializeOptions } from "cookie";
 
 import { AUTH_CONFIG } from "@server/configs";
 
@@ -62,15 +63,19 @@ function setTokenCookie(params: ISetCookie) {
     req, res, tokenName, maxAge, token,
   } = params;
 
-  const options = {
-    req,
-    res,
+  const cookieOptions: CookieSerializeOptions = {
     maxAge: maxAge,
     expires: new Date(Date.now() + maxAge * 1000),
     httpOnly: false, // false cause browser need to access it
     secure: process.env.NODE_ENV === "production",
     path: AUTH_CONFIG.COOKIE_PATH,
-    // sameSite: "lax"
+    sameSite: "lax"
+  };
+
+  const options = {
+    req,
+    res,
+    ...cookieOptions,
   };
 
   setCookie(tokenName, token, options);
